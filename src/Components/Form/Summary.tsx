@@ -1,44 +1,37 @@
-import React, { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { StepsContext } from "../../Context/StepsContext";
 
 const Summary = () => {
+  const { setPages, formValues, setFormValues } = useContext(StepsContext);
+
   const {
-    setPages,
-    formValues: {
-      plan,
-      billingType,
-      totalPrice,
-      addOns: { profile, service, storage },
-    },
-  } = useContext(StepsContext);
+    currentPlanItem: { name },
+    billingType,
+    totalPrice,
+    addOnsList: { service, storage, profile },
+  } = formValues;
 
   const handleBtnChange = (event: any) => {
-    setPages((prev) => prev - 2);
+    setPages((prev: number) => prev - 2);
   };
 
-  const getTheplan = (planObj: any) => {
-    const keyPlan = Object.entries(planObj).map(([key, value]) => {
-      if (value === true) {
-        return key;
-      }
-    });
-    const planValue = keyPlan.filter((a) => a !== undefined);
-    return planValue;
-  };
+  useEffect(() => {
+    setFormValues({ ...formValues });
+  }, []);
 
   return (
-    <div>
+    <div className="animate-fade-right animate-delay-200">
       <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
         Finishing up
       </h1>
       <p className="leading-[1.8] text-[18px] w-10/12 form-desc text-coolGray">
         Double-check everything looks Ok before confirming.
       </p>
-      <div className="flex flex-col px-4 py-2 mt-4 rounded-md bg-magnolia">
+      <div className="flex flex-col px-6 py-2 mt-4 rounded-md bg-magnolia">
         <div className="grid items-center justify-between grid-cols-2">
           <div className="py-2">
-            <h1 className="font-bold text-marineBlue">
-              {billingType ? `${getTheplan(plan)} (Monthly)` : getTheplan(plan)}
+            <h1 className="font-bold capitalize text-marineBlue">
+              {billingType ? name : `${name} (Monthly)`}
             </h1>
             <button
               type="button"
@@ -49,7 +42,9 @@ const Summary = () => {
             </button>
           </div>
           <div className="text-right">
-            <p className="font-bold text-marineBlue">${totalPrice}/mo</p>
+            <p className="font-bold text-marineBlue">
+              {billingType ? `${totalPrice}/yr` : `${totalPrice}/mo`}
+            </p>
           </div>
         </div>
         <hr className="text-lightGray" />
@@ -57,26 +52,26 @@ const Summary = () => {
           {service && (
             <div className="flex items-center justify-between py-2">
               <p className="text-coolGray">Online service</p>
-              <p className="font-medium text-marineBlue">
-                {billingType ? "+$1/mo" : "+$10/yr"}
+              <p className="text-sm font-medium text-marineBlue">
+                {billingType ? "+$10/yr" : "+$1/mo"}
               </p>
             </div>
           )}
           {storage && (
             <div className="flex items-center justify-between py-2">
               <p className="text-coolGray">Larger Storage</p>
-              <p className="font-medium text-marineBlue">
+              <p className="text-sm font-medium text-marineBlue">
                 {" "}
-                {billingType ? "+$2/mo" : "+$20/yr"}
+                {billingType ? "+$20/yr" : "+$2/mo"}
               </p>
             </div>
           )}
           {profile && (
             <div className="flex items-center justify-between py-2">
               <p className="text-coolGray">Customizable profile</p>
-              <p className="font-medium text-marineBlue">
+              <p className="text-sm font-medium text-marineBlue">
                 {" "}
-                {billingType ? "+$2/mo" : "+$20/yr"}
+                {billingType ? "+$20/yr" : "+$2/mo"}
               </p>
             </div>
           )}

@@ -1,97 +1,71 @@
-import React, { createContext, useState, ChangeEvent } from "react";
-import { addOnsType } from "../Components/Form/AddOns";
+import React, { createContext, useState, useEffect, ChangeEvent } from "react";
+import { errorType, defaultProps, ContextType, planType } from "../utils/types";
+import { dataType } from "../utils/types";
 
-type StepsProvider = {
+export interface StepsProvider {
   children: React.ReactNode;
-};
-
-export type errorType = {
-  name: string;
-  email: string;
-  phoneNumber: string;
-};
-
-export type defaultProps = {
-  name: string;
-  email: string;
-  phoneNumber: string;
-  plan: {
-    arcade: boolean;
-    advanced: boolean;
-    pro: boolean;
-  };
-  billingType: boolean;
-  addOns: addOnsType;
-  totalPrice: number;
-};
-
-type stepsType = {
-  id: number;
-  number: number;
-  name: string;
-};
-
-const steps: stepsType[] = [
-  {
-    id: 0,
-    number: 1,
-    name: "Your Info",
-  },
-  {
-    id: 1,
-    number: 2,
-    name: "Select a Plan",
-  },
-  {
-    id: 2,
-    number: 3,
-    name: "add-on",
-  },
-  {
-    id: 3,
-    number: 4,
-    name: "Summary",
-  },
-];
-
-type ContextType = {
-  setPages: React.Dispatch<React.SetStateAction<number>>;
-  setFormValues: React.Dispatch<React.SetStateAction<defaultProps>>;
-  formValues: defaultProps;
-  stepsNumber: stepsType[];
-  setErrors: React.Dispatch<React.SetStateAction<errorType>>;
-  errors: errorType;
-  pages: number;
-  enabled: boolean;
-  setEnabled: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 const initialState: defaultProps = {
   name: "",
   email: "",
-  phoneNumber: "",
-  plan: {
-    arcade: false,
-    advanced: true,
-    pro: false,
-  },
+  phone: "",
+  selectedPlanId: 1,
+  currentPlanItem: {},
   billingType: true,
-  addOns: {
-    service: false,
-    storage: false,
-    profile: false,
+  addOnsList: {
+    service: true,
+    storage: true,
+    profile: true,
   },
-  totalPrice: 9,
+  totalPrice: 0,
 };
 
-export const StepsContext = createContext({} as ContextType);
+export const StepsContext = createContext({} as any);
 
 export const StepsProvider = ({ children }: StepsProvider) => {
-  const [stepsNumber, setStepsNumber] = useState(steps);
   const [pages, setPages] = useState(0);
   const [formValues, setFormValues] = useState(initialState);
-  const [enabled, setEnabled] = useState(true);
+  const [checkoutData, setCheckoutData] = useState<dataType | []>([]);
   const [errors, setErrors] = useState({} as errorType);
+
+  const { plans }: any | [] | dataType = checkoutData;
+  const { selectedPlanId, billingType, currentPlanItem } = formValues;
+
+  const setPrice = (BillingType: boolean, currentItem: any) =>
+    billingType ? currentItem.price.yearly : currentItem.price.montly;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch("/db/data.json");
+      const data = await response.json();
+      const currentIdPlan = selectedPlanId + 1;
+      setCheckoutData(data);
+      setFormValues({
+        ...formValues,
+        currentPlanItem: data.plans,
+        totalPrice: data.plans.find((plan: any) => plan.id === currentIdPlan)
+          .price.yearly,
+      });
+    };
+    fetchData();
+  }, []);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.type === "text" || event.target.type === "email") {
+      setFormValues({
+        ...formValues,
+        [event.target.name]: event.target.value,
+      });
+    }
+    if (event.target.type === "radio") {
+      setFormValues({
+        ...formValues,
+        selectedPlanId: parseInt(event.target.value, 10),
+        totalPrice: setPrice(billingType, currentPlanItem),
+      });
+    }
+  };
 
   return (
     <StepsContext.Provider
@@ -100,11 +74,11 @@ export const StepsProvider = ({ children }: StepsProvider) => {
         pages,
         setFormValues,
         formValues,
-        stepsNumber,
         setErrors,
         errors,
-        enabled,
-        setEnabled,
+        checkoutData,
+        handleChange,
+        setPrice,
       }}
     >
       {children}

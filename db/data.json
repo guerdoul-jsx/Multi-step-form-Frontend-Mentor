@@ -8,7 +8,7 @@
         "monthly": 9,
         "yearly": 90
       },
-      "billingType": true
+      "addonChecker": false
     },
     {
       "id": 2,
@@ -19,7 +19,7 @@
         "monthly": 12,
         "yearly": 120
       },
-      "billingType": true
+      "addonChecker": false
     },
     {
       "id": 3,
@@ -29,7 +29,7 @@
         "monthly": 15,
         "yearly": 150
       },
-      "billingType": true
+      "addonChecker": false
     }
   ],
   "Addons": [
@@ -53,6 +53,28 @@
       "name": "Customizable profile",
       "description": "Custom theme on your profile",
       "price": 2
+    }
+  ],
+  "stepsNumber": [
+    {
+      "id": 0,
+      "number": 1,
+      "name": "Your Info"
+    },
+    {
+      "id": 1,
+      "number": 2,
+      "name": "Select a Plan"
+    },
+    {
+      "id": 2,
+      "number": 3,
+      "name": "add-on"
+    },
+    {
+      "id": 3,
+      "number": 4,
+      "name": "Summary"
     }
   ]
 }

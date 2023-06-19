@@ -1,59 +1,50 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Switch } from "@headlessui/react";
 import { useContext } from "react";
 import { StepsContext } from "../../Context/StepsContext";
 
-type PlanListType = {
-  id: number;
-  name: string;
-  icon: string;
-  price: {
-    monthly: number;
-    yearly: number;
-  };
-};
-
 const Plans = () => {
-  const { setFormValues, formValues, enabled, setEnabled } =
-    useContext(StepsContext);
+  const {
+    checkoutData: { plans },
+    setFormValues,
+    formValues,
+    handleChange,
+  } = useContext(StepsContext);
 
-  const [planList, setPlanList] = useState<PlanListType[] | []>([]);
+  const { billingType, selectedPlanId, addOnsList, totalPrice } = formValues;
 
-  const { plan, billingType } = formValues;
+  // TODO: FUNCTION TO GET THE CURRENT PLAN NEED TO BE SEPARATED
+  const getCurrentPlan = (selectedPlanId: number) => {
+    const currentPlan = plans.find((plan: any) => plan.id === selectedPlanId);
+    return currentPlan;
+  };
+
+  const currentPlan = getCurrentPlan(selectedPlanId + 1);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const respose = await fetch("/db/plan.json");
-      const jsonData = await respose.json();
-      setPlanList(jsonData);
-    };
-
-    fetchData();
-  }, []);
-
-  const handleChange = (event: any) => {
-    console.log("value: ", event.target.value);
-    console.log("id: ", event.target.id);
-    console.log("checked: ", event.target.checked);
-    const { checked } = event.target;
+    // ?! added the current plan to the state and tis need to be separated
     setFormValues({
       ...formValues,
-      plan: {
-        ...plan,
-        [event.target.id]: checked,
-      },
+      currentPlanItem: currentPlan,
     });
-  };
+  }, []);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    setFormValues({
+      ...formValues,
+      currentPlanItem: currentPlan,
+      totalPrice: billingType
+        ? currentPlan.price.yearly
+        : currentPlan.price.monthly,
+    });
+  }, [selectedPlanId, billingType]);
 
-  const handleCheck = () => {
-    setEnabled(!enabled);
-    setFormValues({ ...formValues, billingType: !enabled });
+  const handleCheck = (event: boolean) => {
+    setFormValues({ ...formValues, billingType: event });
   };
 
   return (
-    <div>
+    <div className="animate-fade-right animate-delay-200">
       <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
         Select your plan
       </h1>
@@ -61,16 +52,16 @@ const Plans = () => {
         You have the option of montly or yearly billing.
       </p>
       <div className="flex options gap-x-4">
-        {planList.map(({ name, icon, price }, index) => (
+        {plans.map(({ name, icon, price }: any, index: number) => (
           <div className="relative option h-[200px] basis-1/3" key={index}>
             <input
               type="radio"
               name="plan"
               id={name}
               onChange={handleChange}
-              value={billingType ? price.yearly : price.monthly}
+              checked={selectedPlanId == index}
+              value={index}
               className="absolute hidden w-full input-radio"
-              checked={plan[name as keyof typeof plan]}
             />
             <label
               htmlFor={name}
@@ -84,7 +75,7 @@ const Plans = () => {
                 <div className="option-price text-coolGray">
                   ${price.monthly}/mo
                 </div>
-                {enabled && (
+                {billingType && (
                   <div className="text-sm font-semibold option-price text-marineBlue">
                     2 months free
                   </div>
@@ -97,28 +88,28 @@ const Plans = () => {
       <div className="flex items-center justify-center py-2 mt-16 space-x-3 rounded-md billing-type bg-magnolia ">
         <h1
           className={`${
-            enabled ? "text-coolGray" : "billing-type-active"
+            billingType ? "text-coolGray" : "billing-type-active"
           } font-semibold my-2 text-right form-title`}
         >
           Montly
         </h1>
         <Switch
-          checked={enabled}
+          checked={billingType}
           onChange={handleCheck}
-          className={`${enabled ? "bg-lightGray" : "bg-marineBlue"}
+          className={`${billingType ? "bg-lightGray" : "bg-marineBlue"}
           relative inline-flex ${
-            enabled ? "border-lightGray" : "border-marineBlue"
+            billingType ? "border-lightGray" : "border-marineBlue"
           } h-[30px] w-[65px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
         >
           <span
             aria-hidden="true"
-            className={`${enabled ? "translate-x-9" : "translate-x-0"}
+            className={`${billingType ? "translate-x-9" : "translate-x-0"}
             pointer-events-none inline-block h-[26px] w-[25px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
           />
         </Switch>
         <h1
           className={`${
-            enabled ? "billing-type-active" : "text-coolGray"
+            billingType ? "billing-type-active" : "text-coolGray"
           } font-semibold my-2 text-left form-title`}
         >
           Yearly
