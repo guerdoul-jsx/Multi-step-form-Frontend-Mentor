@@ -5,7 +5,7 @@ import { StepsProvider } from "./Context/StepsContext";
 
 function App() {
   return (
-    <div className="items-center justify-center w-full h-screen bg-magnolia md:bg-none">
+    <div className="items-center justify-center w-full h-screen bg-magnolia md:bg-white">
       <StepsProvider>
         {/* <TestContainer /> */}
         <Toaster />

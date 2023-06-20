@@ -107,7 +107,7 @@ const FormContainer = () => {
 
   if (checkoutData.stepsNumber) {
     return (
-      <form className="max-w-5xl p-4 mx-auto shadow-md h-full md:bg-white">
+      <form className="max-w-5xl p-4 mx-auto h-full">
         <div className="flex flex-col md:flex-row h-full">
           <div className="sideBar mb-14 md:mb-0 md:basis-1/3">
             <div className="hidden md:block md:relative h-full md:bg-desktopImage md:bg-no-repeat md:bg-cover md:bg-center rounded-md">
@@ -140,6 +140,7 @@ const FormContainer = () => {
                 {stepsNumber.map((step: any) => (
                   <div className="flex items-center" key={step.id}>
                     <li
+                      onClick={() => setPages(step.number)}
                       className={`list-none mr-4 ${
                         step.id === pages && "active"
                       } ${

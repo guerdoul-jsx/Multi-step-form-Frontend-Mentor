@@ -29,7 +29,6 @@ export const StepsProvider = ({ children }: StepsProvider) => {
   const [checkoutData, setCheckoutData] = useState<dataType | []>([]);
   const [errors, setErrors] = useState({} as errorType);
 
-  const { plans }: any | [] | dataType = checkoutData;
   const { selectedPlanId, billingType, currentPlanItem } = formValues;
 
   const setPrice = (BillingType: boolean, currentItem: any) =>
