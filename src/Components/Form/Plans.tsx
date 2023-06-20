@@ -9,9 +9,10 @@ const Plans = () => {
     setFormValues,
     formValues,
     handleChange,
+    setPages,
   } = useContext(StepsContext);
 
-  const { billingType, selectedPlanId, addOnsList, totalPrice } = formValues;
+  const { billingType, selectedPlanId, name, email, phone } = formValues;
 
   // TODO: FUNCTION TO GET THE CURRENT PLAN NEED TO BE SEPARATED
   const getCurrentPlan = (selectedPlanId: number) => {
@@ -71,7 +72,7 @@ const Plans = () => {
               className="option-info cursor-pointer h-full flex flex-row items-center md:flex-col md:items-start md:justify-around px-4 py-2 mt-3 rounded-md border-[1px] border-lightGray"
             >
               <img src={icon} alt={name} className="mr-3 md:mr-0" />
-              <div className="mt[15px] md:mt-[30px] w-fullr">
+              <div className="md:mt-[30px] w-fullr">
                 <div className="font-bold uppercase option-title text-marineBlue">
                   {name}
                 </div>
@@ -79,7 +80,7 @@ const Plans = () => {
                   ${price.monthly}/mo
                 </div>
                 {billingType && (
-                  <div className="text-sm font-semibold option-price text-marineBlue">
+                  <div className="text-[13px] font-semibold option-price text-marineBlue">
                     2 months free
                   </div>
                 )}

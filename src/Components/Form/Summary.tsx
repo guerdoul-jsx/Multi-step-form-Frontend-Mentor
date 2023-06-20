@@ -5,13 +5,13 @@ const Summary = () => {
   const { setPages, formValues, setFormValues } = useContext(StepsContext);
 
   const {
-    currentPlanItem: { name },
+    currentPlanItem: { name, price },
     billingType,
     totalPrice,
     addOnsList: { service, storage, profile },
   } = formValues;
 
-  const handleBtnChange = (event: any) => {
+  const handleBtnChange = () => {
     setPages((prev: number) => prev - 2);
   };
 
@@ -43,7 +43,7 @@ const Summary = () => {
           </div>
           <div className="text-right">
             <p className="font-bold text-marineBlue">
-              {billingType ? `${totalPrice}/yr` : `${totalPrice}/mo`}
+              {billingType ? `${price.yearly}/yr` : `${price.monthly}/mo`}
             </p>
           </div>
         </div>
@@ -78,9 +78,11 @@ const Summary = () => {
         </div>
       </div>
       <section className="flex items-center justify-between px-6 mt-2">
-        <h1 className="py-2 text-coolGray">Total (per month)</h1>
+        <h1 className="py-2 text-coolGray">
+          Total {billingType ? "(per year)" : "(per month)"}{" "}
+        </h1>
         <h1 className="text-xl font-semibold text-purplishBlue">
-          +${totalPrice}/mo
+          {billingType ? `$${totalPrice}/year` : `$${totalPrice}/month`}
         </h1>
       </section>
     </div>

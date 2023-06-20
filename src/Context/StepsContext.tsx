@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, ChangeEvent } from "react";
-import { errorType, defaultProps, ContextType, planType } from "../utils/types";
+import { errorType, defaultProps } from "../utils/types";
 import { dataType } from "../utils/types";
 
 export interface StepsProvider {
