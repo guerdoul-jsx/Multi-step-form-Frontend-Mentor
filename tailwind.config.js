@@ -32,7 +32,16 @@ export default {
       "2xl": "1536px",
       // => @media (min-width: 1536px) { ... }
     },
-    extend: {},
+    extend: {
+      backgroundImage: {
+        desktopImage: "url('/src/assets/images/bg-sidebar-desktop.svg')",
+        mobileImage: "url('/src/assets/images/bg-sidebar-mobile.svg')",
+      },
+    },
   },
-  plugins: [require("@tailwindcss/forms"), require("daisyui")],
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("daisyui"),
+    require("tailwindcss-animated"),
+  ],
 };

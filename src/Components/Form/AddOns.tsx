@@ -1,52 +1,87 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StepsContext } from "../../Context/StepsContext";
 
-type addOnsPacks = {
-  id: number;
-  key: string;
-  name: string;
-  description: string;
-  price: number;
-};
-
-export type addOnsType = {
-  service: boolean;
-  storage: boolean;
-  profile: boolean;
-};
-
 const AddOns = () => {
-  const { setFormValues, formValues } = useContext(StepsContext);
-  const [addOns, setAddOns] = useState<addOnsType>({
-    service: false,
-    storage: false,
-    profile: false,
-  });
+  const { setFormValues, formValues, checkoutData } = useContext(StepsContext);
+  const { Addons } = checkoutData;
 
-  const [addOnsPacks, setAddOnsPacks] = useState<addOnsPacks[] | []>([]);
+  const { billingType, addOnsList, totalPrice } = formValues;
 
-  const { billingType } = formValues;
+  const { service, storage, profile } = addOnsList;
+
+  const [serviceCounter, setServiceCounter] = useState(0);
+  const [storageCounter, setStorageCounter] = useState(0);
+  const [profileCounter, setProfileCounter] = useState(0);
 
   const handleCheck = (event: any) => {
-    const { name, checked } = event.target;
-    setAddOns({ ...addOns, [name]: checked });
+    setFormValues({
+      ...formValues,
+      addOnsList: {
+        ...addOnsList,
+        [event.target.name]: event.target.checked,
+      },
+    });
+    setServiceCounter((prev) => prev + 1);
+    setStorageCounter((prev) => prev + 1);
+    setProfileCounter((prev) => prev + 1);
   };
 
+  // ?! UPDATE THE PRICING VALUE BY SERVICE
   useEffect(() => {
-    setFormValues({ ...formValues, addOns: addOns });
-  }, [addOns]);
+    if (serviceCounter > 0) {
+      if (service === false) {
+        setFormValues({
+          ...formValues,
+          totalPrice: billingType === true ? totalPrice - 10 : totalPrice - 1,
+        });
+      }
+      if (service === true) {
+        setFormValues({
+          ...formValues,
+          totalPrice: billingType === true ? totalPrice + 10 : totalPrice + 1,
+        });
+      }
+    }
+  }, [service]);
 
+  // ?! UPDATE THE PRICING VALUE BY STORAGE
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("/db/addOns.json");
-      const data = await response.json();
-      setAddOnsPacks(data);
-    };
-    fetchData();
-  }, []);
+    if (storageCounter > 0) {
+      if (storage === false) {
+        setFormValues({
+          ...formValues,
+          totalPrice: billingType === true ? totalPrice - 20 : totalPrice - 2,
+        });
+      }
+      if (storage === true) {
+        setFormValues({
+          ...formValues,
+          totalPrice: billingType === true ? totalPrice + 20 : totalPrice + 2,
+        });
+      }
+    }
+  }, [storage]);
+
+  // ?! UPDATE THE PRICING VALUE BY PROFILE
+  useEffect(() => {
+    if (profileCounter > 0) {
+      if (profile === false) {
+        setFormValues({
+          ...formValues,
+          totalPrice: billingType === true ? totalPrice - 20 : totalPrice - 2,
+        });
+      }
+      if (profile === true) {
+        setFormValues({
+          ...formValues,
+          totalPrice: billingType === true ? totalPrice + 20 : totalPrice + 2,
+        });
+      }
+    }
+  }, [profile]);
 
   return (
-    <div>
+    <div className="animate-fade-right animate-delay-200 bg-white px-6 py-4 shadow-md md:shadow-none rounded-md md:bg-none ">
       <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
         Pick add-ons
       </h1>
@@ -54,15 +89,17 @@ const AddOns = () => {
         Add-ons help enhance your gaming experience
       </p>
       <div className="flex flex-col mt-4 options gap-y-4">
-        {addOnsPacks.map((packs) => (
+        {Addons.map((packs: any) => (
           <div className="w-full select-none option" key={packs.id}>
             <label
               htmlFor={packs.key}
-              className={`option-info grid grid-cols-8 place-items-center  rounded-md border-[1px] ${
-                addOns[packs.key as keyof typeof addOns]
-                  ? "border-purplishBlue bg-magnolia"
-                  : "border-lightGray"
-              }`}
+              className={`option-info grid grid-cols-8 gap-x-2 px-2 place-items-center  rounded-md border-[1px] cursor-pointer
+                ${
+                  addOnsList[packs.key]
+                    ? "border-purplishBlue bg-magnolia"
+                    : "border-lightGray"
+                }
+              `}
             >
               <input
                 type="checkbox"
@@ -70,20 +107,21 @@ const AddOns = () => {
                 id={packs.key}
                 name={packs.key}
                 onChange={handleCheck}
-                checked={addOns[packs.key as keyof typeof addOns]}
+                checked={addOnsList[packs.key]}
+                // checked={addOns[packs.key as keyof typeof addOns]}
               />
-              <div className="flex flex-col justify-between w-full col-span-5 py-4">
+              <div className="flex flex-col justify-between w-full col-span-5 py-2 md:py-4">
                 <div className="font-bold option-title text-marineBlue">
                   {packs.name}
                 </div>
-                <div className="add-ons-description text-coolGray">
+                <div className="add-ons-description text-[12px] text-coolGray">
                   {packs.description}
                 </div>
               </div>
-              <div className="col-span-2 font-medium text-center add-ons-price text-purplishBlue">
+              <div className="col-span-1 text-sm ml-8 font-medium text-center add-ons-price text-purplishBlue">
                 {billingType
-                  ? `+$${packs.price}/mo`
-                  : `+$${+packs.price * 10}/yr`}
+                  ? `+$${+packs.price * 10}/yr`
+                  : `+$${packs.price}/mo`}
               </div>
             </label>
           </div>

@@ -1,56 +1,20 @@
-import { useState, useContext, ChangeEvent } from "react";
+import { useContext, useEffect } from "react";
 import { StepsContext } from "../../Context/StepsContext";
-import { errorType } from "../../Context/StepsContext";
-
-export const formValidator = (
-  name: string,
-  email: string,
-  phoneNumber: string
-) => {
-  const errors = {} as errorType;
-  if (!name.trim()) {
-    errors.name = "Name is required";
-  }
-
-  if (!email.trim()) {
-    errors.email = "Email is required";
-  } else if (!/\S+@\S+\.\S+/.test(email)) {
-    errors.email = "Invalid email address";
-  }
-
-  if (!phoneNumber.trim()) {
-    errors.phoneNumber = "Phone Number is required";
-  }
-
-  return errors;
-};
 
 const Infos = () => {
-  const { formValues, setFormValues, errors, setErrors } =
+  const { formValues, errors, setErrors, handleChange, validatorsErrors } =
     useContext(StepsContext);
 
-  const { name, email, phoneNumber } = formValues;
+  const { name, email, phone } = formValues;
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = event.target;
-    setFormValues({
-      ...formValues,
-      [name]: value,
-    });
-  };
-
-  const validatorsErrors = formValidator(name, email, phoneNumber);
-
-  const validatorHandler = () => {
-    setErrors(validatorsErrors);
-  };
+  const handleBlur = (event: any) => {};
 
   return (
-    <div>
+    <div className="animate-fade-right bg-white px-6 py-4 shadow-md md:shadow-none rounded-md md:bg-none animate-delay-200">
       <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
         Personal Info
       </h1>
-      <p className="leading-[1.8] text-[18px] w-10/12 form-desc text-coolGray">
+      <p className="leading-[1.8] md:text-[18px] w-10/12 form-desc text-coolGray">
         Please provide your name, email address, and phone number.
       </p>
       <div className="flex flex-col">
@@ -63,7 +27,7 @@ const Infos = () => {
               Name
             </label>
             {errors.name && (
-              <div className="text-[12px] text-strawberrRed font-medium errorMsg">
+              <div className="animate-fade-left text-[10px] font-semibold italic text-strawberrRed errorMsg">
                 {errors.name}
               </div>
             )}
@@ -74,22 +38,24 @@ const Infos = () => {
             onChange={handleChange}
             value={name}
             name="name"
-            onBlur={validatorHandler}
+            onBlur={handleBlur}
             placeholder="e.g . Stephen King"
-            className="block rounded-md border-[1px] border-lightGray"
+            className={`block rounded-md border-[1px] ${
+              errors.name ? "border-strawberrRed" : "border-lightGray"
+            } `}
             required
           />
         </div>
         <div className="flex flex-col my-2 mt-3 space-y-2">
           <div className="flex items-center justify-between">
             <label
-              htmlFor="name"
+              htmlFor="email"
               className="text-marineBlue font-medium text-[15px]"
             >
               Email Address
             </label>
             {errors.email && (
-              <div className="text-[12px] text-strawberrRed font-medium errorMsg">
+              <div className="animate-fade-left text-[10px] font-semibold italic text-strawberrRed errorMsg">
                 {errors.email}
               </div>
             )}
@@ -100,36 +66,40 @@ const Infos = () => {
             value={email}
             onChange={handleChange}
             name="email"
-            onBlur={validatorHandler}
+            onBlur={handleBlur}
             placeholder="e.g . stephen@lorem.com"
-            className="block rounded-md border-[1px] border-lightGray"
+            className={`block rounded-md border-[1px] ${
+              errors.email ? "border-strawberrRed" : "border-lightGray"
+            }`}
             required
           />
         </div>
         <div className="flex flex-col my-2 mt-3 space-y-2">
           <div className="flex items-center justify-between">
             <label
-              htmlFor="name"
+              htmlFor="phone"
               className="text-marineBlue font-medium text-[15px]"
             >
               Phone Number
             </label>
-            {errors.phoneNumber && (
-              <div className="text-[12px] text-strawberrRed font-medium errorMsg">
-                {errors.phoneNumber}
+            {errors.phone && (
+              <div className="animate-fade-left text-[10px] font-semibold italic text-strawberrRed errorMsg">
+                {errors.phone}
               </div>
             )}
           </div>
           <input
             type="text"
             id="phone"
-            name="phoneNumber"
-            value={phoneNumber}
+            name="phone"
+            value={phone}
             onChange={handleChange}
-            onBlur={validatorHandler}
+            onBlur={handleBlur}
             min={9}
             placeholder="e.g + 1 234 567 890"
-            className="block rounded-md border-[1px] border-lightGray"
+            className={`block rounded-md border-[1px]  ${
+              errors.phone ? "border-strawberrRed" : "border-lightGray"
+            } `}
             required
           />
         </div>

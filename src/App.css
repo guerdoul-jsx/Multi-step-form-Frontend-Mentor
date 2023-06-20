@@ -20,7 +20,7 @@
 */
 
 .active {
-  @apply border-none bg-pastelBlue text-marineBlue;
+  @apply border-none bg-lightBlue text-marineBlue;
 }
 
 /* .errorMessage {
