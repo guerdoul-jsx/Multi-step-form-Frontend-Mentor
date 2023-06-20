@@ -1,13 +1,14 @@
+import { Toaster } from "react-hot-toast";
 import "./App.css";
 import FormContainer from "./Components/FormContainer";
-import TestContainer from "./Components/TestContainer";
 import { StepsProvider } from "./Context/StepsContext";
 
 function App() {
   return (
-    <div className="items-center justify-center flex-1 w-full">
+    <div className="items-center justify-center w-full h-screen bg-magnolia md:bg-none">
       <StepsProvider>
         {/* <TestContainer /> */}
+        <Toaster />
         <FormContainer />
       </StepsProvider>
     </div>

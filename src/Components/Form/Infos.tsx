@@ -1,17 +1,20 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { StepsContext } from "../../Context/StepsContext";
 
 const Infos = () => {
-  const { formValues, errors, handleChange } = useContext(StepsContext);
+  const { formValues, errors, setErrors, handleChange, validatorsErrors } =
+    useContext(StepsContext);
 
   const { name, email, phone } = formValues;
 
+  const handleBlur = (event: any) => {};
+
   return (
-    <div className="animate-fade-right animate-delay-200">
+    <div className="animate-fade-right bg-white px-6 py-4 shadow-md md:shadow-none rounded-md md:bg-none animate-delay-200">
       <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
         Personal Info
       </h1>
-      <p className="leading-[1.8] text-[18px] w-10/12 form-desc text-coolGray">
+      <p className="leading-[1.8] md:text-[18px] w-10/12 form-desc text-coolGray">
         Please provide your name, email address, and phone number.
       </p>
       <div className="flex flex-col">
@@ -35,8 +38,11 @@ const Infos = () => {
             onChange={handleChange}
             value={name}
             name="name"
+            onBlur={handleBlur}
             placeholder="e.g . Stephen King"
-            className="block rounded-md border-[1px] border-lightGray"
+            className={`block rounded-md border-[1px] ${
+              errors.name ? "border-strawberrRed" : "border-lightGray"
+            } `}
             required
           />
         </div>
@@ -60,9 +66,11 @@ const Infos = () => {
             value={email}
             onChange={handleChange}
             name="email"
-            // onBlur={validatorHandler}
+            onBlur={handleBlur}
             placeholder="e.g . stephen@lorem.com"
-            className="block rounded-md border-[1px] border-lightGray"
+            className={`block rounded-md border-[1px] ${
+              errors.email ? "border-strawberrRed" : "border-lightGray"
+            }`}
             required
           />
         </div>
@@ -86,10 +94,12 @@ const Infos = () => {
             name="phone"
             value={phone}
             onChange={handleChange}
-            // onBlur={validatorHandler}
+            onBlur={handleBlur}
             min={9}
             placeholder="e.g + 1 234 567 890"
-            className="block rounded-md border-[1px] border-lightGray"
+            className={`block rounded-md border-[1px]  ${
+              errors.phone ? "border-strawberrRed" : "border-lightGray"
+            } `}
             required
           />
         </div>

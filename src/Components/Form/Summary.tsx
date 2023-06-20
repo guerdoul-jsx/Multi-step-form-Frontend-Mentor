@@ -20,7 +20,7 @@ const Summary = () => {
   }, []);
 
   return (
-    <div className="animate-fade-right animate-delay-200">
+    <div className="animate-fade-right animate-delay-200 bg-white px-6 py-4 shadow-md md:shadow-none rounded-md md:bg-none ">
       <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
         Finishing up
       </h1>
@@ -52,7 +52,7 @@ const Summary = () => {
           {service && (
             <div className="flex items-center justify-between py-2">
               <p className="text-coolGray">Online service</p>
-              <p className="text-sm font-medium text-marineBlue">
+              <p className="text-sm md:font-medium font-semibold text-marineBlue">
                 {billingType ? "+$10/yr" : "+$1/mo"}
               </p>
             </div>
@@ -60,7 +60,7 @@ const Summary = () => {
           {storage && (
             <div className="flex items-center justify-between py-2">
               <p className="text-coolGray">Larger Storage</p>
-              <p className="text-sm font-medium text-marineBlue">
+              <p className="text-sm md:font-medium font-semibold text-marineBlue">
                 {" "}
                 {billingType ? "+$20/yr" : "+$2/mo"}
               </p>
@@ -69,7 +69,7 @@ const Summary = () => {
           {profile && (
             <div className="flex items-center justify-between py-2">
               <p className="text-coolGray">Customizable profile</p>
-              <p className="text-sm font-medium text-marineBlue">
+              <p className="text-sm md:font-medium font-semibold text-marineBlue">
                 {" "}
                 {billingType ? "+$20/yr" : "+$2/mo"}
               </p>

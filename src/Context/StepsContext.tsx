@@ -67,6 +67,28 @@ export const StepsProvider = ({ children }: StepsProvider) => {
     }
   };
 
+  const validateForm = () => {
+    const errors = {} as defaultProps;
+
+    if (!formValues.name.trim()) {
+      errors.name = "Name is required";
+    }
+
+    if (!formValues.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formValues.email)) {
+      errors.email = "Invalid email address";
+    }
+
+    if (!formValues.phone.trim()) {
+      errors.phone = "Phone Number is required";
+    }
+
+    return errors;
+  };
+
+  const validatorsErrors = validateForm();
+
   return (
     <StepsContext.Provider
       value={{
@@ -79,6 +101,7 @@ export const StepsProvider = ({ children }: StepsProvider) => {
         checkoutData,
         handleChange,
         setPrice,
+        validatorsErrors,
       }}
     >
       {children}

@@ -81,7 +81,7 @@ const AddOns = () => {
   }, [profile]);
 
   return (
-    <div className="animate-fade-right animate-delay-200">
+    <div className="animate-fade-right animate-delay-200 bg-white px-6 py-4 shadow-md md:shadow-none rounded-md md:bg-none ">
       <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
         Pick add-ons
       </h1>
@@ -93,7 +93,7 @@ const AddOns = () => {
           <div className="w-full select-none option" key={packs.id}>
             <label
               htmlFor={packs.key}
-              className={`option-info grid grid-cols-8 place-items-center  rounded-md border-[1px] cursor-pointer
+              className={`option-info grid grid-cols-8 gap-x-2 px-2 place-items-center  rounded-md border-[1px] cursor-pointer
                 ${
                   addOnsList[packs.key]
                     ? "border-purplishBlue bg-magnolia"
@@ -110,15 +110,15 @@ const AddOns = () => {
                 checked={addOnsList[packs.key]}
                 // checked={addOns[packs.key as keyof typeof addOns]}
               />
-              <div className="flex flex-col justify-between w-full col-span-5 py-4">
+              <div className="flex flex-col justify-between w-full col-span-5 py-2 md:py-4">
                 <div className="font-bold option-title text-marineBlue">
                   {packs.name}
                 </div>
-                <div className="add-ons-description text-coolGray">
+                <div className="add-ons-description text-[12px] text-coolGray">
                   {packs.description}
                 </div>
               </div>
-              <div className="col-span-2 font-medium text-center add-ons-price text-purplishBlue">
+              <div className="col-span-1 text-sm ml-8 font-medium text-center add-ons-price text-purplishBlue">
                 {billingType
                   ? `+$${+packs.price * 10}/yr`
                   : `+$${packs.price}/mo`}
