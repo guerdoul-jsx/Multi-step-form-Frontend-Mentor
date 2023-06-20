@@ -105,15 +105,29 @@ const FormContainer = () => {
     toast.success("Your subscription has been confirmed");
   };
 
+  const handleNavigation = (currentStep: number) => {
+    // ?! check if the name and email and phone number it's not empty
+    if (name === "" && email === "" && phone === "") {
+      setPages(0);
+      toast.error("All the field are required");
+    } else {
+      setPages(currentStep - 1);
+    }
+  };
+
   if (checkoutData.stepsNumber) {
     return (
-      <form className="max-w-5xl p-4 mx-auto shadow-md h-full md:bg-white">
+      <form className="max-w-5xl p-4 mx-auto h-full">
         <div className="flex flex-col md:flex-row h-full">
           <div className="sideBar mb-14 md:mb-0 md:basis-1/3">
             <div className="hidden md:block md:relative h-full md:bg-desktopImage md:bg-no-repeat md:bg-cover md:bg-center rounded-md">
               <div className="steps-number w-10/12 mx-auto absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[80%] space-y-8">
                 {stepsNumber.map((step: any) => (
-                  <div className="flex items-center" key={step.id}>
+                  <div
+                    className="flex items-center"
+                    key={step.id}
+                    onClick={() => handleNavigation(step.id)}
+                  >
                     <li
                       className={`list-none mr-4 ${
                         step.id === pages && "active"
@@ -138,7 +152,11 @@ const FormContainer = () => {
             <div className="block h-[200px] md:hidden absolute left-0 top-0 w-full bg-mobileImage bg-no-repeat bg-cover bg-center ">
               <div className="steps-number flex item-center justify-around md:justify-between w-10/12 mx-auto absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[80%] md:space-y-8">
                 {stepsNumber.map((step: any) => (
-                  <div className="flex items-center" key={step.id}>
+                  <div
+                    className="flex items-center"
+                    key={step.id}
+                    onClick={() => handleNavigation(step.number)}
+                  >
                     <li
                       className={`list-none mr-4 ${
                         step.id === pages && "active"
@@ -199,7 +217,9 @@ const FormContainer = () => {
       </form>
     );
   } else {
-    return <span className="loading loading-spinner"></span>;
+    return (
+      <div className="loading loading-spinner h-screen flex items-center mx-auto justify-center"></div>
+    );
   }
 };
 

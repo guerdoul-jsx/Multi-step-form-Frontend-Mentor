@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, ChangeEvent } from "react";
-import { errorType, defaultProps, ContextType, planType } from "../utils/types";
+import { errorType, defaultProps } from "../utils/types";
 import { dataType } from "../utils/types";
 
 export interface StepsProvider {
@@ -29,7 +29,6 @@ export const StepsProvider = ({ children }: StepsProvider) => {
   const [checkoutData, setCheckoutData] = useState<dataType | []>([]);
   const [errors, setErrors] = useState({} as errorType);
 
-  const { plans }: any | [] | dataType = checkoutData;
   const { selectedPlanId, billingType, currentPlanItem } = formValues;
 
   const setPrice = (BillingType: boolean, currentItem: any) =>
