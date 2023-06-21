@@ -1,15 +1,21 @@
 import { useContext, useEffect } from "react";
 import { StepsContext } from "../../Context/StepsContext";
+import { SummaryProps, planType } from "../../utils/types";
 
 const Summary = () => {
-  const { setPages, formValues, setFormValues } = useContext(StepsContext);
+  const { setPages, formValues, setFormValues }: SummaryProps =
+    useContext(StepsContext);
 
   const {
-    currentPlanItem: { name, price },
+    currentPlanItem,
     billingType,
     totalPrice,
     addOnsList: { service, storage, profile },
   } = formValues;
+
+  const { name, price } = !Array.isArray(currentPlanItem)
+    ? currentPlanItem
+    : ({} as planType);
 
   const handleBtnChange = () => {
     setPages((prev: number) => prev - 2);
@@ -20,7 +26,7 @@ const Summary = () => {
   }, []);
 
   return (
-    <div className="animate-fade-right animate-delay-200 bg-white px-6 py-4 shadow-md md:shadow-none rounded-md md:bg-none ">
+    <div className="px-6 py-4 bg-white rounded-md shadow-md animate-fade-right animate-delay-200 md:shadow-none md:bg-none ">
       <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
         Finishing up
       </h1>
@@ -52,7 +58,7 @@ const Summary = () => {
           {service && (
             <div className="flex items-center justify-between py-2">
               <p className="text-coolGray">Online service</p>
-              <p className="text-sm md:font-medium font-semibold text-marineBlue">
+              <p className="text-sm font-semibold md:font-medium text-marineBlue">
                 {billingType ? "+$10/yr" : "+$1/mo"}
               </p>
             </div>
@@ -60,7 +66,7 @@ const Summary = () => {
           {storage && (
             <div className="flex items-center justify-between py-2">
               <p className="text-coolGray">Larger Storage</p>
-              <p className="text-sm md:font-medium font-semibold text-marineBlue">
+              <p className="text-sm font-semibold md:font-medium text-marineBlue">
                 {" "}
                 {billingType ? "+$20/yr" : "+$2/mo"}
               </p>
@@ -69,7 +75,7 @@ const Summary = () => {
           {profile && (
             <div className="flex items-center justify-between py-2">
               <p className="text-coolGray">Customizable profile</p>
-              <p className="text-sm md:font-medium font-semibold text-marineBlue">
+              <p className="text-sm font-semibold md:font-medium text-marineBlue">
                 {" "}
                 {billingType ? "+$20/yr" : "+$2/mo"}
               </p>

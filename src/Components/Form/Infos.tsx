@@ -1,16 +1,44 @@
-import { useContext } from "react";
+import { useContext, FocusEvent, KeyboardEvent } from "react";
 import { StepsContext } from "../../Context/StepsContext";
+import { InfosProps } from "../../utils/types";
 
 const Infos = () => {
-  const { formValues, errors, setErrors, handleChange, validatorsErrors } =
+  const { formValues, errors, setErrors, handleChange }: InfosProps =
     useContext(StepsContext);
 
   const { name, email, phone } = formValues;
 
-  const handleBlur = (event: any) => {};
+  const handleBlur = (event: FocusEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    // ** REMMOVE THE ERROR MESSAGE FROM THE NAME IF THE FIELD IS NOT EMPTY
+    if (name === "name") {
+      if (value !== "") {
+        setErrors({ ...errors, name: null });
+      }
+    }
+    // ** REMMOVE THE ERROR MESSAGE FROM THE EMAIL IF THE FIELD IS NOT EMPTY
+    if (name === "email") {
+      if (value !== "") {
+        setErrors({ ...errors, email: null });
+      }
+    }
+    // ** REMMOVE THE ERROR MESSAGE FROM THE PHONE IF THE FIELD IS NOT EMPTY
+    if (name === "phone") {
+      if (value !== "") {
+        setErrors({ ...errors, phone: null });
+      }
+    }
+  };
+
+  const handleKeyUpPhone = (event: KeyboardEvent<HTMLInputElement>) => {
+    const target = event.target as HTMLInputElement;
+    let inputValue = target.value;
+    const onlyNumber = inputValue.replace(/\D/g, "");
+    target.value = onlyNumber;
+  };
 
   return (
-    <div className="animate-fade-right bg-white px-6 py-4 shadow-md md:shadow-none rounded-md md:bg-none animate-delay-200">
+    <div className="px-6 py-4 bg-white rounded-md shadow-md animate-fade-right md:shadow-none md:bg-none animate-delay-200">
       <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
         Personal Info
       </h1>
@@ -96,6 +124,7 @@ const Infos = () => {
             onChange={handleChange}
             onBlur={handleBlur}
             min={9}
+            onKeyUp={handleKeyUpPhone}
             placeholder="e.g + 1 234 567 890"
             className={`block rounded-md border-[1px]  ${
               errors.phone ? "border-strawberrRed" : "border-lightGray"

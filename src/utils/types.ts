@@ -1,3 +1,5 @@
+import { ChangeEvent } from "react";
+
 export interface stepsType {
   id: number;
   number: number;
@@ -15,16 +17,16 @@ export interface defaultProps {
   email: string;
   phone: string;
   selectedPlanId: number;
-  currentPlanItem: any;
+  currentPlanItem: planType[] | planType;
   billingType: boolean;
   addOnsList: addOns;
   totalPrice: number;
 }
 
 export interface errorType {
-  name: string;
-  email: string;
-  phoneNumber: string;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
 }
 
 export interface StepsProvider {
@@ -73,3 +75,32 @@ export type dataType = {
   Addons: addOnsType[];
   stepsNumber: numberSteps[];
 };
+
+export interface InfosProps {
+  formValues: defaultProps;
+  setFormValues: React.Dispatch<React.SetStateAction<defaultProps>>;
+
+  errors: errorType;
+  setErrors: React.Dispatch<React.SetStateAction<errorType>>;
+  handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  validatorsErrors: errorType;
+}
+
+export interface PlansProps {
+  checkoutData: dataType;
+  setFormValues: React.Dispatch<React.SetStateAction<defaultProps>>;
+  formValues: defaultProps;
+  handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface AddOnsProps {
+  setFormValues: React.Dispatch<React.SetStateAction<defaultProps>>;
+  formValues: defaultProps;
+  checkoutData: dataType;
+}
+
+export interface SummaryProps {
+  setPages: React.Dispatch<React.SetStateAction<number>>;
+  formValues: defaultProps;
+  setFormValues: React.Dispatch<React.SetStateAction<defaultProps>>;
+}
