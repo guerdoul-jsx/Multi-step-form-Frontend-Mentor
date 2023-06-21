@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Switch } from "@headlessui/react";
 import { useContext } from "react";
 import { StepsContext } from "../../Context/StepsContext";
+import { PlansProps } from "../../utils/types";
 
 const Plans = () => {
   const {
@@ -9,10 +10,9 @@ const Plans = () => {
     setFormValues,
     formValues,
     handleChange,
-    setPages,
-  } = useContext(StepsContext);
+  }: PlansProps = useContext(StepsContext);
 
-  const { billingType, selectedPlanId, name, email, phone } = formValues;
+  const { billingType, selectedPlanId } = formValues;
 
   // TODO: FUNCTION TO GET THE CURRENT PLAN NEED TO BE SEPARATED
   const getCurrentPlan = (selectedPlanId: number) => {
@@ -24,20 +24,24 @@ const Plans = () => {
 
   useEffect(() => {
     // ?! added the current plan to the state and tis need to be separated
-    setFormValues({
-      ...formValues,
-      currentPlanItem: currentPlan,
-    });
+    if (currentPlan && !Array.isArray(currentPlan)) {
+      setFormValues({
+        ...formValues,
+        currentPlanItem: currentPlan,
+      });
+    }
   }, []);
 
   useEffect(() => {
-    setFormValues({
-      ...formValues,
-      currentPlanItem: currentPlan,
-      totalPrice: billingType
-        ? currentPlan.price.yearly
-        : currentPlan.price.monthly,
-    });
+    if (currentPlan && !Array.isArray(currentPlan)) {
+      setFormValues({
+        ...formValues,
+        currentPlanItem: currentPlan,
+        totalPrice: billingType
+          ? currentPlan.price.yearly
+          : currentPlan.price.monthly,
+      });
+    }
   }, [selectedPlanId, billingType]);
 
   const handleCheck = (event: boolean) => {
@@ -45,7 +49,7 @@ const Plans = () => {
   };
 
   return (
-    <div className="animate-fade-right bg-white px-6 py-4 shadow-md md:shadow-none rounded-md md:bg-none  animate-delay-200">
+    <div className="px-6 py-4 bg-white rounded-md shadow-md animate-fade-right md:shadow-none md:bg-none animate-delay-200">
       <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
         Select your plan
       </h1>
@@ -89,7 +93,7 @@ const Plans = () => {
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-center py-2 mt-8 md:mt-16 space-x-3 rounded-md billing-type bg-magnolia ">
+      <div className="flex items-center justify-center py-2 mt-8 space-x-3 rounded-md md:mt-16 billing-type bg-magnolia ">
         <h1
           className={`${
             billingType ? "text-coolGray" : "billing-type-active"

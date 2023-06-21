@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, ChangeEvent } from "react";
-import { errorType, defaultProps } from "../utils/types";
+import { errorType, defaultProps, planType } from "../utils/types";
 import { dataType } from "../utils/types";
 
 export interface StepsProvider {
@@ -11,7 +11,7 @@ const initialState: defaultProps = {
   email: "",
   phone: "",
   selectedPlanId: 1,
-  currentPlanItem: {},
+  currentPlanItem: {} as planType,
   billingType: true,
   addOnsList: {
     service: true,
@@ -31,15 +31,12 @@ export const StepsProvider = ({ children }: StepsProvider) => {
 
   const { selectedPlanId, billingType, currentPlanItem } = formValues;
 
-  const setPrice = (BillingType: boolean, currentItem: any) =>
-    billingType ? currentItem.price.yearly : currentItem.price.montly;
-
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch("/db/data.json");
       const data = await response.json();
       const currentIdPlan = selectedPlanId + 1;
-      setCheckoutData(data);
+      setCheckoutData(data as dataType);
       setFormValues({
         ...formValues,
         currentPlanItem: data.plans,
@@ -58,11 +55,15 @@ export const StepsProvider = ({ children }: StepsProvider) => {
       });
     }
     if (event.target.type === "radio") {
-      setFormValues({
-        ...formValues,
-        selectedPlanId: parseInt(event.target.value, 10),
-        totalPrice: setPrice(billingType, currentPlanItem),
-      });
+      if (!Array.isArray(currentPlanItem)) {
+        setFormValues({
+          ...formValues,
+          selectedPlanId: parseInt(event.target.value, 10),
+          totalPrice: billingType
+            ? currentPlanItem.price.yearly
+            : currentPlanItem.price.monthly,
+        });
+      }
     }
   };
 
@@ -71,6 +72,8 @@ export const StepsProvider = ({ children }: StepsProvider) => {
 
     if (!formValues.name.trim()) {
       errors.name = "Name is required";
+    } else if (!/^[A-Za-z ]+$/.test(formValues.name)) {
+      errors.name = "Invalid Name";
     }
 
     if (!formValues.email.trim()) {
@@ -81,12 +84,14 @@ export const StepsProvider = ({ children }: StepsProvider) => {
 
     if (!formValues.phone.trim()) {
       errors.phone = "Phone Number is required";
+    } else if (!/^\+?\d{1,3}-?\d{3}-?\d{3}-?\d{4}$/.test(formValues.phone)) {
+      errors.phone = "Invalid Phone Number";
     }
 
     return errors;
   };
 
-  const validatorsErrors = validateForm();
+  const validatorsErrors: errorType = validateForm();
 
   return (
     <StepsContext.Provider
@@ -99,7 +104,6 @@ export const StepsProvider = ({ children }: StepsProvider) => {
         errors,
         checkoutData,
         handleChange,
-        setPrice,
         validatorsErrors,
       }}
     >
