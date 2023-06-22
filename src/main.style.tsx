@@ -33,7 +33,7 @@ export const FormSectionContainer = styled.div`
 `;
 
 export const DesktopStepsContainer = styled.div`
-  ${tw`hidden h-full rounded-md md:block md:relative md:bg-desktopImage md:bg-no-repeat md:bg-cover md:bg-center`}
+  ${tw`hidden h-full rounded-md md:block md:relative md:bg-no-repeat md:bg-cover md:bg-center`}
 `;
 
 export const DesktopStepsHeader = styled.div`
