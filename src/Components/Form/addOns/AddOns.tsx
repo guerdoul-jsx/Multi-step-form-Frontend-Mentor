@@ -1,8 +1,19 @@
-import { useContext, useEffect, useState } from "react";
-import { StepsContext } from "../../Context/StepsContext";
+import { useContext, useEffect, useState, ChangeEvent } from "react";
+import { StepsContext } from "../../../Context/StepsContext";
+import { AddOnsProps, addOns } from "../../../utils/types";
+import { StepContainer, StepDescription, StepTitle } from "../../../main.style";
+
+import {
+  AddOnsContainer,
+  AddOnsPack,
+  AddOnLabel,
+  AddOnsInfo,
+  PacksPrice,
+} from "./AddOns.styles";
 
 const AddOns = () => {
-  const { setFormValues, formValues, checkoutData } = useContext(StepsContext);
+  const { setFormValues, formValues, checkoutData }: AddOnsProps =
+    useContext(StepsContext);
   const { Addons } = checkoutData;
 
   const { billingType, addOnsList, totalPrice } = formValues;
@@ -13,7 +24,7 @@ const AddOns = () => {
   const [storageCounter, setStorageCounter] = useState(0);
   const [profileCounter, setProfileCounter] = useState(0);
 
-  const handleCheck = (event: any) => {
+  const handleCheck = (event: ChangeEvent<HTMLInputElement>) => {
     setFormValues({
       ...formValues,
       addOnsList: {
@@ -81,25 +92,17 @@ const AddOns = () => {
   }, [profile]);
 
   return (
-    <div className="animate-fade-right animate-delay-200 bg-white px-6 py-4 shadow-md md:shadow-none rounded-md md:bg-none ">
-      <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
-        Pick add-ons
-      </h1>
-      <p className="leading-[1.8] text-[18px] w-10/12 form-desc text-coolGray">
+    <StepContainer>
+      <StepTitle>Pick add-ons</StepTitle>
+      <StepDescription>
         Add-ons help enhance your gaming experience
-      </p>
-      <div className="flex flex-col mt-4 options gap-y-4">
-        {Addons.map((packs: any) => (
-          <div className="w-full select-none option" key={packs.id}>
-            <label
+      </StepDescription>
+      <AddOnsContainer>
+        {Addons.map((packs) => (
+          <AddOnsPack key={packs.id}>
+            <AddOnLabel
               htmlFor={packs.key}
-              className={`option-info grid grid-cols-8 gap-x-2 px-2 place-items-center  rounded-md border-[1px] cursor-pointer
-                ${
-                  addOnsList[packs.key]
-                    ? "border-purplishBlue bg-magnolia"
-                    : "border-lightGray"
-                }
-              `}
+              packsKey={addOnsList[packs.key as keyof addOns]}
             >
               <input
                 type="checkbox"
@@ -107,27 +110,22 @@ const AddOns = () => {
                 id={packs.key}
                 name={packs.key}
                 onChange={handleCheck}
-                checked={addOnsList[packs.key]}
-                // checked={addOns[packs.key as keyof typeof addOns]}
+                checked={addOnsList[packs.key as keyof addOns]}
               />
-              <div className="flex flex-col justify-between w-full col-span-5 py-2 md:py-4">
-                <div className="font-bold option-title text-marineBlue">
-                  {packs.name}
-                </div>
-                <div className="add-ons-description text-[12px] text-coolGray">
-                  {packs.description}
-                </div>
-              </div>
-              <div className="col-span-1 text-sm ml-8 font-medium text-center add-ons-price text-purplishBlue">
+              <AddOnsInfo>
+                <div>{packs.name}</div>
+                <div>{packs.description}</div>
+              </AddOnsInfo>
+              <PacksPrice>
                 {billingType
                   ? `+$${+packs.price * 10}/yr`
                   : `+$${packs.price}/mo`}
-              </div>
-            </label>
-          </div>
+              </PacksPrice>
+            </AddOnLabel>
+          </AddOnsPack>
         ))}
-      </div>
-    </div>
+      </AddOnsContainer>
+    </StepContainer>
   );
 };
 

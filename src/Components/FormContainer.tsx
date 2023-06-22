@@ -1,22 +1,39 @@
 import { useContext } from "react";
-import Infos from "./Form/Infos";
-import Plans from "./Form/Plans";
-import AddOns from "./Form/AddOns";
-import Summary from "./Form/Summary";
+import Infos from "./Form/info/Infos";
+import Plans from "./Form/plans/Plans";
+import AddOns from "./Form/addOns/AddOns";
+import Summary from "./Form/summary/Summary";
 import { StepsContext } from "../Context/StepsContext";
 import { toast } from "react-hot-toast";
-import ThanksPage from "./Form/ThanksPage";
+import ThanksPage from "./Form/thank/ThanksPage";
+import * as yup from "yup";
+
+import { yupResolver } from "@hookform/resolvers/yup";
+
+import { useForm, SubmitHandler } from "react-hook-form";
+import { personalForm, planType } from "../utils/types";
+
+import {
+  FormContainer as FConatiner,
+  StepsContainer,
+  SideBar,
+  FormSection,
+  MobileStepsContainer,
+  DesktopStepsContainer,
+  DesktopStepsHeader,
+  MobileStepsHeader,
+  StepCenter,
+  StepItem,
+  StepItemInfo,
+  Loading,
+  FormSectionContainer,
+  Form,
+  NavigationSection,
+} from "../main.style";
 
 const FormContainer = () => {
-  const {
-    pages,
-    setPages,
-    setErrors,
-    checkoutData,
-    formValues,
-    setFormValues,
-    validatorsErrors,
-  } = useContext(StepsContext);
+  const { pages, setPages, checkoutData, formValues, setFormValues } =
+    useContext(StepsContext);
 
   const { stepsNumber, plans } = checkoutData;
   const {
@@ -27,8 +44,29 @@ const FormContainer = () => {
     name,
     email,
     phone,
-    currentPlanItem,
   } = formValues;
+
+  //?! YUP validation
+
+  const formShecma = yup.object().shape({
+    name: yup
+      .string()
+      .required("Full name is required")
+      .min(3, "Full name must be at least 3 characters"),
+    email: yup.string().email("Invalid email").required("Email is required"),
+    phone: yup
+      .string()
+      .matches(/\d{1,14}$/, "Invalid phone number")
+      .required("Phone number is required")
+      .min(10, "Phone number must be at least 10 characters"),
+  });
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+  } = useForm<personalForm>({
+    resolver: yupResolver(formShecma),
+  });
 
   const { profile, service, storage } = addOnsList;
 
@@ -47,11 +85,37 @@ const FormContainer = () => {
 
     return price;
   };
+  const onSubmit: SubmitHandler<personalForm> = (data) => {
+    const { name, email, phone } = data;
+    if (pages === 0) {
+      if (name && email && phone) {
+        setFormValues({ ...formValues, name, email, phone });
+      } else {
+        toast.error("All fields are required ;;");
+        return;
+      }
+    }
+
+    if (pages === 1) {
+      const currentId = selectedPlanId + 1;
+      const currentPrice = setCurrentPrice();
+
+      // ?! added the current plan to the state and tis need to be separated
+      const currentPlan = plans.find((plan: planType) => plan.id === currentId);
+      console.log(currentId);
+      setFormValues({
+        ...formValues,
+        currentPlanItem: currentPlan,
+        totalPrice: currentPrice,
+      });
+    }
+    setPages(pages === stepsNumber.length ? 0 : pages + 1);
+  };
 
   const formSteps = () => {
     switch (pages) {
       case 0:
-        return <Infos />;
+        return <Infos errors={errors} register={register} />;
       case 1:
         return <Plans />;
       case 2:
@@ -64,108 +128,67 @@ const FormContainer = () => {
     }
   };
 
-  const handleNextBtn = (event: any) => {
-    event.preventDefault();
-    if (pages === 0) {
-      if (email === "" || phone === "" || name === "") {
-        setErrors(validatorsErrors);
-        return;
-      }
-    }
-    if (!currentPlanItem) {
-      toast.error("Please chose a plan");
-      return;
-    }
-    if (pages === 1) {
-      const currentId = selectedPlanId + 1;
-      const currentPrice = setCurrentPrice();
-
-      // ?! added the current plan to the state and tis need to be separated
-      const currentPlan = plans.find((plan: any) => plan.id === currentId);
-      console.log(currentId);
-      setFormValues({
-        ...formValues,
-        currentPlanItem: currentPlan,
-        totalPrice: currentPrice,
-      });
-    }
-    console.log("clicked");
-    setPages(pages === stepsNumber.length ? 0 : pages + 1);
-  };
-
   const handlePrevBtn = (event: any) => {
     event.preventDefault();
     setPages(pages === 0 ? 0 : pages - 1);
   };
 
-  const hanldeSubmit = (event: any) => {
-    event.preventDefault();
-    setPages((prev: number) => prev + 1);
-    console.log(formValues);
-    toast.success("Your subscription has been confirmed");
+  const handleNavigation = (currentStep: number) => {
+    // ?! check if the name and email and phone number it's not empty
+    if (name === "" && email === "" && phone === "") {
+      setPages(0);
+      toast.error("All the field are required");
+    } else {
+      setPages(currentStep);
+    }
   };
 
   if (checkoutData.stepsNumber) {
     return (
-      <form className="max-w-5xl p-4 mx-auto h-full">
-        <div className="flex flex-col md:flex-row h-full">
-          <div className="sideBar mb-14 md:mb-0 md:basis-1/3">
-            <div className="hidden md:block md:relative h-full md:bg-desktopImage md:bg-no-repeat md:bg-cover md:bg-center rounded-md">
-              <div className="steps-number w-10/12 mx-auto absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[80%] space-y-8">
+      <FConatiner>
+        <StepsContainer>
+          <SideBar>
+            <DesktopStepsContainer>
+              <DesktopStepsHeader>
                 {stepsNumber.map((step: any) => (
-                  <div className="flex items-center" key={step.id}>
-                    <li
-                      className={`list-none mr-4 ${
-                        step.id === pages && "active"
-                      } ${
-                        pages === 4 && step.id === 3
-                          ? "active required:text-marineBlue"
-                          : step.id === pages
-                          ? "text-marineBlue"
-                          : "text-white"
-                      } border-white cursor-pointer font-semibold border-[1px] rounded-full w-[40px] h-[40px] flex items-center justify-center`}
-                    >
+                  <StepCenter
+                    key={step.id}
+                    onClick={() => handleNavigation(step.id)}
+                  >
+                    <StepItem pages={pages} stepId={step.id}>
                       {step.number}
-                    </li>
-                    <div className="flex flex-col flex-1 uppercase">
-                      <h6 className="text-lightGray">Step {step.number}</h6>
-                      <h2 className="font-medium text-white">{step.name}</h2>
-                    </div>
-                  </div>
+                    </StepItem>
+                    <StepItemInfo>
+                      <h6>Step {step.number}</h6>
+                      <h2>{step.name}</h2>
+                    </StepItemInfo>
+                  </StepCenter>
                 ))}
-              </div>
-            </div>
-            <div className="block h-[200px] md:hidden absolute left-0 top-0 w-full bg-mobileImage bg-no-repeat bg-cover bg-center ">
-              <div className="steps-number flex item-center justify-around md:justify-between w-10/12 mx-auto absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[80%] md:space-y-8">
+              </DesktopStepsHeader>
+            </DesktopStepsContainer>
+            <MobileStepsContainer>
+              <MobileStepsHeader>
                 {stepsNumber.map((step: any) => (
-                  <div className="flex items-center" key={step.id}>
-                    <li
-                      onClick={() => setPages(step.number)}
-                      className={`list-none mr-4 ${
-                        step.id === pages && "active"
-                      } ${
-                        pages === 4 && step.id === 3
-                          ? "active required:text-marineBlue"
-                          : step.id === pages
-                          ? "text-marineBlue"
-                          : "text-white"
-                      } border-white cursor-pointer font-semibold border-[1px] rounded-full w-[40px] h-[40px] flex items-center justify-center`}
-                    >
+                  <StepCenter
+                    key={step.id}
+                    onClick={() => handleNavigation(step.number)}
+                  >
+                    <StepItem pages={pages} stepId={step.id}>
                       {step.number}
-                    </li>
-                    <div className="hidden md:flex flex-col flex-1 uppercase">
-                      <h6 className="text-lightGray">Step {step.number}</h6>
-                      <h2 className="font-medium text-white">{step.name}</h2>
-                    </div>
-                  </div>
+                    </StepItem>
+                    <StepItemInfo>
+                      <h6>Step {step.number}</h6>
+                      <h2>{step.name}</h2>
+                    </StepItemInfo>
+                  </StepCenter>
                 ))}
-              </div>
-            </div>
-          </div>
-          <div className="flex-1">
-            <div className="flex flex-col md:w-10/12 h-full py-6 mx-auto">
-              <div className="my-12">{formSteps()}</div>
-              <div className="fixed bottom-0 left-0 w-full bg-white py-3 md:py-0 shadow-md md:shadow-none md:static md:bg-none flex flex-row justify-between px-6 md:mt-auto font-medium buttons-container">
+              </MobileStepsHeader>
+            </MobileStepsContainer>
+          </SideBar>
+          <FormSection>
+            <FormSectionContainer>
+              <Form>{formSteps()}</Form>
+              <NavigationSection>
                 {pages > 0 && pages < 4 && (
                   <button
                     onClick={handlePrevBtn}
@@ -175,32 +198,25 @@ const FormContainer = () => {
                     Go Back
                   </button>
                 )}
-
-                {pages === 3 ? (
+                {pages < 4 && (
                   <button
-                    className="px-4 py-2 text-white rounded-md bg-purplishBlue"
-                    onClick={hanldeSubmit}
+                    type="submit"
+                    onClick={handleSubmit(onSubmit)}
+                    className={`px-4 py-2 ml-auto text-white rounded-md ${
+                      pages < 3 ? "bg-marineBlue" : "bg-purplishBlue"
+                    } `}
                   >
-                    Confirm
+                    {pages < 3 ? "Next Step" : "Confirm"}
                   </button>
-                ) : pages < 4 ? (
-                  <button
-                    onClick={handleNextBtn}
-                    className="px-4 py-2 text-white rounded-md bg-marineBlue ml-auto"
-                  >
-                    Next Step
-                  </button>
-                ) : (
-                  <></>
                 )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
+              </NavigationSection>
+            </FormSectionContainer>
+          </FormSection>
+        </StepsContainer>
+      </FConatiner>
     );
   } else {
-    return <span className="loading loading-spinner"></span>;
+    return <Loading />;
   }
 };
 
