@@ -150,7 +150,7 @@ const FormContainer = () => {
         <StepsContainer>
           <SideBar>
             <DesktopStepsContainer
-              className={`md:bg-[url('${DesktopSidebar}')]`}
+              style={{ backgroundImage: "url(https://svgshare.com/i/uZN.svg)" }}
             >
               <DesktopStepsHeader>
                 {stepsNumber.map((step: any) => (
