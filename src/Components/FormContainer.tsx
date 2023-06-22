@@ -6,6 +6,13 @@ import Summary from "./Form/summary/Summary";
 import { StepsContext } from "../Context/StepsContext";
 import { toast } from "react-hot-toast";
 import ThanksPage from "./Form/thank/ThanksPage";
+import * as yup from "yup";
+
+import { yupResolver } from "@hookform/resolvers/yup";
+
+import { useForm, SubmitHandler } from "react-hook-form";
+import { personalForm, planType } from "../utils/types";
+
 import {
   FormContainer as FConatiner,
   StepsContainer,
@@ -25,15 +32,8 @@ import {
 } from "../main.style";
 
 const FormContainer = () => {
-  const {
-    pages,
-    setPages,
-    setErrors,
-    checkoutData,
-    formValues,
-    setFormValues,
-    validatorsErrors,
-  } = useContext(StepsContext);
+  const { pages, setPages, checkoutData, formValues, setFormValues } =
+    useContext(StepsContext);
 
   const { stepsNumber, plans } = checkoutData;
   const {
@@ -44,8 +44,29 @@ const FormContainer = () => {
     name,
     email,
     phone,
-    currentPlanItem,
   } = formValues;
+
+  //?! YUP validation
+
+  const formShecma = yup.object().shape({
+    name: yup
+      .string()
+      .required("Full name is required")
+      .min(3, "Full name must be at least 3 characters"),
+    email: yup.string().email("Invalid email").required("Email is required"),
+    phone: yup
+      .string()
+      .matches(/\d{1,14}$/, "Invalid phone number")
+      .required("Phone number is required")
+      .min(10, "Phone number must be at least 10 characters"),
+  });
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+  } = useForm<personalForm>({
+    resolver: yupResolver(formShecma),
+  });
 
   const { profile, service, storage } = addOnsList;
 
@@ -64,11 +85,37 @@ const FormContainer = () => {
 
     return price;
   };
+  const onSubmit: SubmitHandler<personalForm> = (data) => {
+    const { name, email, phone } = data;
+    if (pages === 0) {
+      if (name && email && phone) {
+        setFormValues({ ...formValues, name, email, phone });
+      } else {
+        toast.error("All fields are required ;;");
+        return;
+      }
+    }
+
+    if (pages === 1) {
+      const currentId = selectedPlanId + 1;
+      const currentPrice = setCurrentPrice();
+
+      // ?! added the current plan to the state and tis need to be separated
+      const currentPlan = plans.find((plan: planType) => plan.id === currentId);
+      console.log(currentId);
+      setFormValues({
+        ...formValues,
+        currentPlanItem: currentPlan,
+        totalPrice: currentPrice,
+      });
+    }
+    setPages(pages === stepsNumber.length ? 0 : pages + 1);
+  };
 
   const formSteps = () => {
     switch (pages) {
       case 0:
-        return <Infos />;
+        return <Infos errors={errors} register={register} />;
       case 1:
         return <Plans />;
       case 2:
@@ -81,50 +128,9 @@ const FormContainer = () => {
     }
   };
 
-  const handleNextBtn = (event: any) => {
-    event.preventDefault();
-    // if (pages === 0) {
-    //   if (email === "" || phone === "" || name === "") {
-    //     setErrors(validatorsErrors);
-    //     return;
-    //   }
-    // }
-    // if (/^[A-Za-z ]+$/.test(formValues.phone)) {
-    //   setErrors({ ...validatorsErrors, phone: "Invalid Phone Number" });
-    //   setFormValues({ ...formValues, phone: "" });
-    //   return;
-    // }
-
-    // if (!currentPlanItem) {
-    //   toast.error("Please chose a plan");
-    //   return;
-    // }
-    // if (pages === 1) {
-    //   const currentId = selectedPlanId + 1;
-    //   const currentPrice = setCurrentPrice();
-
-    //   // ?! added the current plan to the state and tis need to be separated
-    //   const currentPlan = plans.find((plan: any) => plan.id === currentId);
-    //   console.log(currentId);
-    //   setFormValues({
-    //     ...formValues,
-    //     currentPlanItem: currentPlan,
-    //     totalPrice: currentPrice,
-    //   });
-    // }
-    setPages(pages === stepsNumber.length ? 0 : pages + 1);
-  };
-
   const handlePrevBtn = (event: any) => {
     event.preventDefault();
     setPages(pages === 0 ? 0 : pages - 1);
-  };
-
-  const hanldeSubmit = (event: any) => {
-    event.preventDefault();
-    setPages((prev: number) => prev + 1);
-    console.log(formValues);
-    toast.success("Your subscription has been confirmed");
   };
 
   const handleNavigation = (currentStep: number) => {
@@ -133,7 +139,7 @@ const FormContainer = () => {
       setPages(0);
       toast.error("All the field are required");
     } else {
-      setPages(currentStep - 1);
+      setPages(currentStep);
     }
   };
 
@@ -192,23 +198,16 @@ const FormContainer = () => {
                     Go Back
                   </button>
                 )}
-
-                {pages === 3 ? (
+                {pages < 4 && (
                   <button
-                    className="px-4 py-2 text-white rounded-md bg-purplishBlue"
-                    onClick={hanldeSubmit}
+                    type="submit"
+                    onClick={handleSubmit(onSubmit)}
+                    className={`px-4 py-2 ml-auto text-white rounded-md ${
+                      pages < 3 ? "bg-marineBlue" : "bg-purplishBlue"
+                    } `}
                   >
-                    Confirm
+                    {pages < 3 ? "Next Step" : "Confirm"}
                   </button>
-                ) : pages < 4 ? (
-                  <button
-                    onClick={handleNextBtn}
-                    className="px-4 py-2 ml-auto text-white rounded-md bg-marineBlue"
-                  >
-                    Next Step
-                  </button>
-                ) : (
-                  <></>
                 )}
               </NavigationSection>
             </FormSectionContainer>
