@@ -1,5 +1,7 @@
 import tw, { styled } from "twin.macro";
 
+import { BillingProps } from "../../../utils/types";
+
 export const PlansContainer = styled.div`
   ${tw`flex flex-col md:flex-row gap-x-4`}
 `;
@@ -31,10 +33,6 @@ export const CheckBoxInfo = styled.div`
 export const BillingSection = styled.div`
   ${tw`flex items-center justify-center py-2 mt-8 space-x-3 rounded-md md:mt-16 bg-magnolia `}
 `;
-
-type BillingProps = {
-  billingType: boolean;
-};
 
 export const BillingMonthly = styled.h1`
   ${tw`font-bold`};

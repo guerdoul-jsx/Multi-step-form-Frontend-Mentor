@@ -1,4 +1,5 @@
 import tw, { styled } from "twin.macro";
+import { AddOnLabelProps } from "../../../utils/types";
 
 export const AddOnsContainer = styled.div`
   ${tw`flex flex-col mt-4 gap-y-4`}
@@ -8,13 +9,10 @@ export const AddOnsPack = styled.div`
   ${tw`w-full select-none`}
 `;
 
-type AddOnLabel = {
-  packsKey: boolean;
-};
 export const AddOnLabel = styled.label`
   ${tw`grid grid-cols-8 gap-x-2 px-2 place-items-center  rounded-md border-[1px] cursor-pointer`}
 
-  ${({ packsKey }: AddOnLabel) =>
+  ${({ packsKey }: AddOnLabelProps) =>
     packsKey ? tw`border-purplishBlue bg-magnolia` : tw`border-lightGray`}
 `;
 

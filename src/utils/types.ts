@@ -104,3 +104,13 @@ export interface SummaryProps {
   formValues: defaultProps;
   setFormValues: React.Dispatch<React.SetStateAction<defaultProps>>;
 }
+
+// ** TYPES DOR STYLED COMPONENTS
+
+export type AddOnLabelProps = {
+  packsKey: boolean;
+};
+
+export type BillingProps = {
+  billingType: boolean;
+};
