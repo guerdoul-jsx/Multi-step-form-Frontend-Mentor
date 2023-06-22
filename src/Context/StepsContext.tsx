@@ -32,9 +32,12 @@ export const StepsProvider = ({ children }: StepsProvider) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/db/data.json");
-      const data = await response.json();
+      const response = await fetch(
+        "https://api.jsonbin.io/v3/b/6494b4388e4aa6225eb2bf88"
+      );
+      const apiData = await response.json();
       const currentIdPlan = selectedPlanId + 1;
+      const data = apiData.record;
       setCheckoutData(data as dataType);
       setFormValues({
         ...formValues,
