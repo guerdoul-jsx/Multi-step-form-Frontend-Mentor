@@ -7,7 +7,6 @@ import { StepsContext } from "../Context/StepsContext";
 import { toast } from "react-hot-toast";
 import ThanksPage from "./Form/thank/ThanksPage";
 import * as yup from "yup";
-import DesktopSidebar from "/assets/images/bg-sidebar-desktop.svg";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 
