@@ -1,8 +1,18 @@
 import { useEffect } from "react";
 import { Switch } from "@headlessui/react";
 import { useContext } from "react";
-import { StepsContext } from "../../Context/StepsContext";
-import { PlansProps } from "../../utils/types";
+import { StepsContext } from "../../../Context/StepsContext";
+import { PlansProps, planType } from "../../../utils/types";
+import { StepContainer, StepDescription, StepTitle } from "../../../main.style";
+import {
+  PlansContainer,
+  CheckboxContainer,
+  PlanTitle,
+  CheckBoxInfo,
+  BillingSection,
+  BillingMonthly,
+  BillingYearly,
+} from "./Plans.style";
 
 const Plans = () => {
   const {
@@ -16,7 +26,9 @@ const Plans = () => {
 
   // TODO: FUNCTION TO GET THE CURRENT PLAN NEED TO BE SEPARATED
   const getCurrentPlan = (selectedPlanId: number) => {
-    const currentPlan = plans.find((plan: any) => plan.id === selectedPlanId);
+    const currentPlan = plans.find(
+      (plan: planType) => plan.id === selectedPlanId
+    );
     return currentPlan;
   };
 
@@ -49,19 +61,14 @@ const Plans = () => {
   };
 
   return (
-    <div className="px-6 py-4 bg-white rounded-md shadow-md animate-fade-right md:shadow-none md:bg-none animate-delay-200">
-      <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
-        Select your plan
-      </h1>
-      <p className="leading-[1.8] md:text-[18px] w-10/12 form-desc text-coolGray">
+    <StepContainer>
+      <StepTitle>Select your plan</StepTitle>
+      <StepDescription>
         You have the option of montly or yearly billing.
-      </p>
-      <div className="flex flex-col md:flex-row options gap-x-4">
-        {plans.map(({ name, icon, price }: any, index: number) => (
-          <div
-            className="relative option h-[170px] basis-1/3 gap-x-2"
-            key={index}
-          >
+      </StepDescription>
+      <PlansContainer>
+        {plans.map(({ name, icon, price }: planType, index: number) => (
+          <CheckboxContainer key={index}>
             <input
               type="radio"
               name="plan"
@@ -71,36 +78,19 @@ const Plans = () => {
               value={index}
               className="absolute hidden w-full input-radio"
             />
-            <label
-              htmlFor={name}
-              className="option-info cursor-pointer h-full flex flex-row items-center md:flex-col md:items-start md:justify-around px-4 py-2 mt-3 rounded-md border-[1px] border-lightGray"
-            >
+            <PlanTitle htmlFor={name} className="option-info">
               <img src={icon} alt={name} className="mr-3 md:mr-0" />
-              <div className="md:mt-[30px] w-fullr">
-                <div className="font-bold uppercase option-title text-marineBlue">
-                  {name}
-                </div>
-                <div className="option-price text-coolGray">
-                  ${price.monthly}/mo
-                </div>
-                {billingType && (
-                  <div className="text-[13px] font-semibold option-price text-marineBlue">
-                    2 months free
-                  </div>
-                )}
-              </div>
-            </label>
-          </div>
+              <CheckBoxInfo>
+                <div>{name}</div>
+                <div>${price.monthly}/mo</div>
+                {billingType && <div>2 months free</div>}
+              </CheckBoxInfo>
+            </PlanTitle>
+          </CheckboxContainer>
         ))}
-      </div>
-      <div className="flex items-center justify-center py-2 mt-8 space-x-3 rounded-md md:mt-16 billing-type bg-magnolia ">
-        <h1
-          className={`${
-            billingType ? "text-coolGray" : "billing-type-active"
-          } font-semibold my-2 text-right form-title`}
-        >
-          Montly
-        </h1>
+      </PlansContainer>
+      <BillingSection>
+        <BillingMonthly billingType={billingType}>Montly</BillingMonthly>
         <Switch
           checked={billingType}
           onChange={handleCheck}
@@ -115,15 +105,9 @@ const Plans = () => {
             pointer-events-none inline-block h-[26px] w-[25px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
           />
         </Switch>
-        <h1
-          className={`${
-            billingType ? "billing-type-active" : "text-coolGray"
-          } font-semibold my-2 text-left form-title`}
-        >
-          Yearly
-        </h1>
-      </div>
-    </div>
+        <BillingYearly billingType={billingType}>Yearly</BillingYearly>
+      </BillingSection>
+    </StepContainer>
   );
 };
 

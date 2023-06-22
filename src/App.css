@@ -1,24 +1,3 @@
-/* .header-container {
-  background: url("./assets//images//bg-sidebar-mobile.svg") center no-repeat;
-  width: 100%;
-  background-size: cover;
-  position: relative;
-  height: 200px;
-}
-.form-container {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  top: 50%;
-  left: 50%;
-}
-
-.stepNumber {
-  list-style: none;
-  cursor: pointer;
-}
-*/
-
 .active {
   @apply border-none bg-lightBlue text-marineBlue;
 }
@@ -33,8 +12,4 @@
 
 .input-radio:checked ~ .option-info {
   @apply border-2 border-purplishBlue bg-magnolia;
-}
-
-.billing-type-active {
-  @apply text-marineBlue;
 }

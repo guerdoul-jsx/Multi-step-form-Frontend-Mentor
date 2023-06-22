@@ -1,6 +1,18 @@
 import { useContext, FocusEvent, KeyboardEvent } from "react";
-import { StepsContext } from "../../Context/StepsContext";
-import { InfosProps } from "../../utils/types";
+import { StepsContext } from "../../../Context/StepsContext";
+import { InfosProps } from "../../../utils/types";
+
+// STYLED COMPONENTS //
+import {
+  StepInputContainer,
+  InputContainer,
+  CenterItems,
+  InputTitle,
+  ErrorInputTitle,
+} from "./Infos.style";
+import { StepContainer } from "../../../main.style";
+import { StepDescription } from "../../../main.style";
+import { StepTitle } from "../../../main.style";
 
 const Infos = () => {
   const { formValues, errors, setErrors, handleChange }: InfosProps =
@@ -38,28 +50,17 @@ const Infos = () => {
   };
 
   return (
-    <div className="px-6 py-4 bg-white rounded-md shadow-md animate-fade-right md:shadow-none md:bg-none animate-delay-200">
-      <h1 className="my-2 text-3xl font-bold text-left form-title text-marineBlue">
-        Personal Info
-      </h1>
-      <p className="leading-[1.8] md:text-[18px] w-10/12 form-desc text-coolGray">
+    <StepContainer>
+      <StepTitle>Personal Info</StepTitle>
+      <StepDescription>
         Please provide your name, email address, and phone number.
-      </p>
-      <div className="flex flex-col">
-        <div className="flex flex-col my-2 mt-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <label
-              htmlFor="name"
-              className="text-marineBlue font-medium text-[15px]"
-            >
-              Name
-            </label>
-            {errors.name && (
-              <div className="animate-fade-left text-[10px] font-semibold italic text-strawberrRed errorMsg">
-                {errors.name}
-              </div>
-            )}
-          </div>
+      </StepDescription>
+      <StepInputContainer>
+        <InputContainer>
+          <CenterItems>
+            <InputTitle htmlFor="name">Name</InputTitle>
+            {errors.name && <ErrorInputTitle>{errors.name}</ErrorInputTitle>}
+          </CenterItems>
           <input
             type="text"
             id="name"
@@ -73,21 +74,12 @@ const Infos = () => {
             } `}
             required
           />
-        </div>
-        <div className="flex flex-col my-2 mt-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <label
-              htmlFor="email"
-              className="text-marineBlue font-medium text-[15px]"
-            >
-              Email Address
-            </label>
-            {errors.email && (
-              <div className="animate-fade-left text-[10px] font-semibold italic text-strawberrRed errorMsg">
-                {errors.email}
-              </div>
-            )}
-          </div>
+        </InputContainer>
+        <InputContainer>
+          <CenterItems>
+            <InputTitle htmlFor="email">Email Address</InputTitle>
+            {errors.email && <ErrorInputTitle>{errors.email}</ErrorInputTitle>}
+          </CenterItems>
           <input
             type="email"
             id="email"
@@ -101,21 +93,12 @@ const Infos = () => {
             }`}
             required
           />
-        </div>
-        <div className="flex flex-col my-2 mt-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <label
-              htmlFor="phone"
-              className="text-marineBlue font-medium text-[15px]"
-            >
-              Phone Number
-            </label>
-            {errors.phone && (
-              <div className="animate-fade-left text-[10px] font-semibold italic text-strawberrRed errorMsg">
-                {errors.phone}
-              </div>
-            )}
-          </div>
+        </InputContainer>
+        <InputContainer>
+          <CenterItems>
+            <InputTitle htmlFor="phone">Phone Number</InputTitle>
+            {errors.phone && <ErrorInputTitle>{errors.phone}</ErrorInputTitle>}
+          </CenterItems>
           <input
             type="text"
             id="phone"
@@ -131,9 +114,9 @@ const Infos = () => {
             } `}
             required
           />
-        </div>
-      </div>
-    </div>
+        </InputContainer>
+      </StepInputContainer>
+    </StepContainer>
   );
 };
 

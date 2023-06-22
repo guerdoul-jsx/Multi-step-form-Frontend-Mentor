@@ -1,11 +1,28 @@
 import { useContext } from "react";
-import Infos from "./Form/Infos";
-import Plans from "./Form/Plans";
-import AddOns from "./Form/AddOns";
-import Summary from "./Form/Summary";
+import Infos from "./Form/info/Infos";
+import Plans from "./Form/plans/Plans";
+import AddOns from "./Form/addOns/AddOns";
+import Summary from "./Form/summary/Summary";
 import { StepsContext } from "../Context/StepsContext";
 import { toast } from "react-hot-toast";
-import ThanksPage from "./Form/ThanksPage";
+import ThanksPage from "./Form/thank/ThanksPage";
+import {
+  FormContainer as FConatiner,
+  StepsContainer,
+  SideBar,
+  FormSection,
+  MobileStepsContainer,
+  DesktopStepsContainer,
+  DesktopStepsHeader,
+  MobileStepsHeader,
+  StepCenter,
+  StepItem,
+  StepItemInfo,
+  Loading,
+  FormSectionContainer,
+  Form,
+  NavigationSection,
+} from "../main.style";
 
 const FormContainer = () => {
   const {
@@ -66,35 +83,35 @@ const FormContainer = () => {
 
   const handleNextBtn = (event: any) => {
     event.preventDefault();
-    if (pages === 0) {
-      if (email === "" || phone === "" || name === "") {
-        setErrors(validatorsErrors);
-        return;
-      }
-    }
-    if (/^[A-Za-z ]+$/.test(formValues.phone)) {
-      setErrors({ ...validatorsErrors, phone: "Invalid Phone Number" });
-      setFormValues({ ...formValues, phone: "" });
-      return;
-    }
+    // if (pages === 0) {
+    //   if (email === "" || phone === "" || name === "") {
+    //     setErrors(validatorsErrors);
+    //     return;
+    //   }
+    // }
+    // if (/^[A-Za-z ]+$/.test(formValues.phone)) {
+    //   setErrors({ ...validatorsErrors, phone: "Invalid Phone Number" });
+    //   setFormValues({ ...formValues, phone: "" });
+    //   return;
+    // }
 
-    if (!currentPlanItem) {
-      toast.error("Please chose a plan");
-      return;
-    }
-    if (pages === 1) {
-      const currentId = selectedPlanId + 1;
-      const currentPrice = setCurrentPrice();
+    // if (!currentPlanItem) {
+    //   toast.error("Please chose a plan");
+    //   return;
+    // }
+    // if (pages === 1) {
+    //   const currentId = selectedPlanId + 1;
+    //   const currentPrice = setCurrentPrice();
 
-      // ?! added the current plan to the state and tis need to be separated
-      const currentPlan = plans.find((plan: any) => plan.id === currentId);
-      console.log(currentId);
-      setFormValues({
-        ...formValues,
-        currentPlanItem: currentPlan,
-        totalPrice: currentPrice,
-      });
-    }
+    //   // ?! added the current plan to the state and tis need to be separated
+    //   const currentPlan = plans.find((plan: any) => plan.id === currentId);
+    //   console.log(currentId);
+    //   setFormValues({
+    //     ...formValues,
+    //     currentPlanItem: currentPlan,
+    //     totalPrice: currentPrice,
+    //   });
+    // }
     setPages(pages === stepsNumber.length ? 0 : pages + 1);
   };
 
@@ -122,72 +139,50 @@ const FormContainer = () => {
 
   if (checkoutData.stepsNumber) {
     return (
-      <form className="h-full max-w-5xl p-4 mx-auto">
-        <div className="flex flex-col h-full md:flex-row">
-          <div className="sideBar mb-14 md:mb-0 md:basis-1/3">
-            <div className="hidden h-full rounded-md md:block md:relative md:bg-desktopImage md:bg-no-repeat md:bg-cover md:bg-center">
-              <div className="steps-number w-10/12 mx-auto absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[80%] space-y-8">
+      <FConatiner>
+        <StepsContainer>
+          <SideBar>
+            <DesktopStepsContainer>
+              <DesktopStepsHeader>
                 {stepsNumber.map((step: any) => (
-                  <div
-                    className="flex items-center"
+                  <StepCenter
                     key={step.id}
                     onClick={() => handleNavigation(step.id)}
                   >
-                    <li
-                      className={`list-none mr-4 ${
-                        step.id === pages && "active"
-                      } ${
-                        pages === 4 && step.id === 3
-                          ? "active required:text-marineBlue"
-                          : step.id === pages
-                          ? "text-marineBlue"
-                          : "text-white"
-                      } border-white cursor-pointer font-semibold border-[1px] rounded-full w-[40px] h-[40px] flex items-center justify-center`}
-                    >
+                    <StepItem pages={pages} stepId={step.id}>
                       {step.number}
-                    </li>
-                    <div className="flex flex-col flex-1 uppercase">
-                      <h6 className="text-lightGray">Step {step.number}</h6>
-                      <h2 className="font-medium text-white">{step.name}</h2>
-                    </div>
-                  </div>
+                    </StepItem>
+                    <StepItemInfo>
+                      <h6>Step {step.number}</h6>
+                      <h2>{step.name}</h2>
+                    </StepItemInfo>
+                  </StepCenter>
                 ))}
-              </div>
-            </div>
-            <div className="block h-[200px] md:hidden absolute left-0 top-0 w-full bg-mobileImage bg-no-repeat bg-cover bg-center ">
-              <div className="steps-number flex item-center justify-around md:justify-between w-10/12 mx-auto absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[80%] md:space-y-8">
+              </DesktopStepsHeader>
+            </DesktopStepsContainer>
+            <MobileStepsContainer>
+              <MobileStepsHeader>
                 {stepsNumber.map((step: any) => (
-                  <div
-                    className="flex items-center"
+                  <StepCenter
                     key={step.id}
                     onClick={() => handleNavigation(step.number)}
                   >
-                    <li
-                      className={`list-none mr-4 ${
-                        step.id === pages && "active"
-                      } ${
-                        pages === 4 && step.id === 3
-                          ? "active required:text-marineBlue"
-                          : step.id === pages
-                          ? "text-marineBlue"
-                          : "text-white"
-                      } border-white cursor-pointer font-semibold border-[1px] rounded-full w-[40px] h-[40px] flex items-center justify-center`}
-                    >
+                    <StepItem pages={pages} stepId={step.id}>
                       {step.number}
-                    </li>
-                    <div className="flex-col flex-1 hidden uppercase md:flex">
-                      <h6 className="text-lightGray">Step {step.number}</h6>
-                      <h2 className="font-medium text-white">{step.name}</h2>
-                    </div>
-                  </div>
+                    </StepItem>
+                    <StepItemInfo>
+                      <h6>Step {step.number}</h6>
+                      <h2>{step.name}</h2>
+                    </StepItemInfo>
+                  </StepCenter>
                 ))}
-              </div>
-            </div>
-          </div>
-          <div className="flex-1">
-            <div className="flex flex-col h-full py-6 mx-auto md:w-10/12">
-              <div className="my-12">{formSteps()}</div>
-              <div className="fixed bottom-0 left-0 flex flex-row justify-between w-full px-6 py-3 font-medium bg-white shadow-md md:py-0 md:shadow-none md:static md:bg-none md:mt-auto buttons-container">
+              </MobileStepsHeader>
+            </MobileStepsContainer>
+          </SideBar>
+          <FormSection>
+            <FormSectionContainer>
+              <Form>{formSteps()}</Form>
+              <NavigationSection>
                 {pages > 0 && pages < 4 && (
                   <button
                     onClick={handlePrevBtn}
@@ -215,16 +210,14 @@ const FormContainer = () => {
                 ) : (
                   <></>
                 )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
+              </NavigationSection>
+            </FormSectionContainer>
+          </FormSection>
+        </StepsContainer>
+      </FConatiner>
     );
   } else {
-    return (
-      <div className="flex items-center justify-center h-screen mx-auto loading loading-spinner"></div>
-    );
+    return <Loading />;
   }
 };
 
