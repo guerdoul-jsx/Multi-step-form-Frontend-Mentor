@@ -88,7 +88,9 @@ const Plans = () => {
               <img src={iconsList[index]} alt={name} className="mr-3 md:mr-0" />
               <CheckBoxInfo>
                 <div>{name}</div>
-                <div>${price.monthly}/mo</div>
+                <div>
+                  ${billingType ? `${price.yearly}/yr` : `${price.monthly}/mo`}
+                </div>
                 {billingType && <div>2 months free</div>}
               </CheckBoxInfo>
             </PlanTitle>
