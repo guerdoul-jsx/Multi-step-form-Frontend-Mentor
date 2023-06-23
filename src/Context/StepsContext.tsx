@@ -32,9 +32,7 @@ export const StepsProvider = ({ children }: StepsProvider) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(
-        "https://api.jsonbin.io/v3/b/6494b4388e4aa6225eb2bf88"
-      );
+      const response = await fetch(import.meta.env.VITE_DATA_API);
       const apiData = await response.json();
       const currentIdPlan = selectedPlanId + 1;
       const data = apiData.record;

@@ -113,12 +113,14 @@ const FormContainer = () => {
 
       // ?! added the current plan to the state and tis need to be separated
       const currentPlan = plans.find((plan: planType) => plan.id === currentId);
-      console.log(currentId);
       setFormValues({
         ...formValues,
         currentPlanItem: currentPlan,
         totalPrice: currentPrice,
       });
+    }
+    if (pages === 3) {
+      console.log(formValues);
     }
     setPages(pages === stepsNumber.length ? 0 : pages + 1);
   };
