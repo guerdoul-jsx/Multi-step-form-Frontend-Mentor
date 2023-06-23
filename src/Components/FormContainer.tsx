@@ -8,12 +8,21 @@ import { toast } from "react-hot-toast";
 import ThanksPage from "./Form/thank/ThanksPage";
 import * as yup from "yup";
 
-import DesktopSidebar from "../assets/images/bg-sidebar-desktop.svg";
+import DesktopSidebar from "/assets/images/bg-sidebar-desktop.svg";
+import MobileSidebar from "/assets/images/bg-sidebar-mobile.svg";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { personalForm, planType } from "../utils/types";
+
+const desktopStyle = {
+  backgroundImage: `url(${DesktopSidebar})`,
+};
+
+const mobileStyle = {
+  backgroundImage: `url(${MobileSidebar})`,
+};
 
 import {
   FormContainer as FConatiner,
@@ -150,7 +159,7 @@ const FormContainer = () => {
       <FConatiner>
         <StepsContainer>
           <SideBar>
-            <DesktopStepsContainer>
+            <DesktopStepsContainer style={desktopStyle}>
               <DesktopStepsHeader>
                 {stepsNumber.map((step: any) => (
                   <StepCenter
@@ -168,7 +177,7 @@ const FormContainer = () => {
                 ))}
               </DesktopStepsHeader>
             </DesktopStepsContainer>
-            <MobileStepsContainer>
+            <MobileStepsContainer style={mobileStyle}>
               <MobileStepsHeader>
                 {stepsNumber.map((step: any) => (
                   <StepCenter
