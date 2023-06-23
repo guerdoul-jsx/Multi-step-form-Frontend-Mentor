@@ -57,8 +57,7 @@ const FormContainer = () => {
     phone,
   } = formValues;
 
-  //?! YUP validation
-
+  // ! YUP validation
   const formShecma = yup.object().shape({
     name: yup
       .string()
