@@ -73,7 +73,7 @@ const Plans = () => {
         You have the option of montly or yearly billing.
       </StepDescription>
       <PlansContainer>
-        {plans.map(({ name, icon, price }: planType, index: number) => (
+        {plans.map(({ name, price }: planType, index: number) => (
           <CheckboxContainer key={index}>
             <input
               type="radio"
