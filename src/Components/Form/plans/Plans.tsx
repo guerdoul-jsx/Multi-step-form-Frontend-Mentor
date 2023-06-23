@@ -14,6 +14,12 @@ import {
   BillingYearly,
 } from "./Plans.style";
 
+import AdvancedIcons from "/assets/images/icon-advanced.svg";
+import ArcadeIcons from "/assets/images/icon-arcade.svg";
+import ProIcons from "/assets/images/icon-pro.svg";
+
+const iconsList = [ArcadeIcons, AdvancedIcons, ProIcons];
+
 const Plans = () => {
   const {
     checkoutData: { plans },
@@ -79,7 +85,7 @@ const Plans = () => {
               className="absolute hidden w-full input-radio"
             />
             <PlanTitle htmlFor={name} className="option-info">
-              <img src={icon} alt={name} className="mr-3 md:mr-0" />
+              <img src={iconsList[index]} alt={name} className="mr-3 md:mr-0" />
               <CheckBoxInfo>
                 <div>{name}</div>
                 <div>${price.monthly}/mo</div>

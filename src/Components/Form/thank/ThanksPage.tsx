@@ -1,4 +1,4 @@
-import ThankYouImg from "../../../assets/images/icon-thank-you.svg";
+import ThankYouImg from "/assets/images/icon-thank-you.svg";
 import { ThanksContainer, ThanksMainSection } from "./ThanksPage.style";
 
 const ThanksPage = () => {
